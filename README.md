@@ -1,0 +1,2 @@
+# goku
+kubectl trainer
