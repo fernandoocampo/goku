@@ -4,6 +4,10 @@
 *.dll
 *.so
 *.dylib
+main
+/k
+/goku
+/bin
 
 # Test binary, built with `go test -c`
 *.test

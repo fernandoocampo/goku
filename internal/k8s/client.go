@@ -39,10 +39,11 @@ func NewClientWithKubeConfig(kubeconfigpath string) (*Client, error) {
 		return nil, errClient
 	}
 
-	return &Client{
+	newClient := Client{
 		config: config,
 		client: clientSet,
-	}, nil
+	}
+	return &newClient, nil
 }
 
 // config reads the kubernetes config from the default location, e.g. $HOME/.kube/config.
