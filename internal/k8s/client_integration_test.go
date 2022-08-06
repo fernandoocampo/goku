@@ -10,11 +10,19 @@ import (
 
 var integration = flag.Bool("integration", false, "integration test")
 
-func TestNewClient(t *testing.T) {
+func TestNewK8sClient(t *testing.T) {
+	flag.Parse()
 	if !*integration {
 		t.Skip("this is an integration test, please provide the integration flag")
 	}
-	client, err := k8s.NewClient()
+	// Given
+	configdata, err := k8s.LoadDefaultKubeConfig()
+	if err != nil {
+		t.Fatalf("unexpected error loading default kube config: %s", err)
+	}
+	// When
+	client, err := k8s.NewClient(configdata)
+	// Then
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
 }

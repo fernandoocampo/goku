@@ -5,4 +5,4 @@ BINARY_NAME=bin/goku
 SRC_FOLDER=cmd/goku
 
 build: 
-	$(GOBUILD) -o $(BINARY_NAME) -v ./$(SRC_FOLDER)
+	$(GOBUILD) -race -o $(BINARY_NAME) -v ./$(SRC_FOLDER)

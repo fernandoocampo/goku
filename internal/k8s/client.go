@@ -13,25 +13,18 @@ import (
 
 var errConfig = errors.New("failed to create config")
 var errClient = errors.New("failed to create kube client")
+var errNilConfig = errors.New("the given config object is empty")
 
-type Client struct {
+type client struct {
 	config *rest.Config
 	client kubernetes.Interface
 }
 
-// NewClient creates a client to interact with the k8s cluster.
-// It will try to use the kube config located in the home folder.
-func NewClient() (*Client, error) {
-	return NewClientWithKubeConfig("")
-}
-
 // NewClientWithKubeConfig creates a client to interact with the k8s cluster.
-// a valid kube config path should be provided otherwise it will use the one
-// located in the home folder.
-func NewClientWithKubeConfig(kubeconfigpath string) (*Client, error) {
-	config, err := config(kubeconfigpath)
-	if err != nil {
-		return nil, err
+// based on the given kube config object.
+func NewClient(config *rest.Config) (*client, error) {
+	if config == nil {
+		return nil, errNilConfig
 	}
 	clientSet, err := kubernetes.NewForConfig(config)
 	if err != nil {
@@ -39,18 +32,15 @@ func NewClientWithKubeConfig(kubeconfigpath string) (*Client, error) {
 		return nil, errClient
 	}
 
-	newClient := Client{
+	newClient := client{
 		config: config,
 		client: clientSet,
 	}
 	return &newClient, nil
 }
 
-// config reads the kubernetes config from the default location, e.g. $HOME/.kube/config.
-func config(kubeconfigpath string) (*rest.Config, error) {
-	if home := homedir.HomeDir(); home != "" && kubeconfigpath == "" {
-		kubeconfigpath = filepath.Join(home, ".kube", "config")
-	}
+// LoadConfig reads the kubernetes config from the given path e.g. $HOME/.kube/config.
+func LoadConfig(kubeconfigpath string) (*rest.Config, error) {
 	if kubeconfigpath == "" {
 		log.Println("you should specify a valid kube config path or set up a valid kube config file in home folder")
 		return nil, errors.New("please provide or set up a valid kube config file")
@@ -62,4 +52,13 @@ func config(kubeconfigpath string) (*rest.Config, error) {
 		return nil, errConfig
 	}
 	return config, nil
+}
+
+// LoadDefaultKubeConfig load the default kube config file
+func LoadDefaultKubeConfig() (*rest.Config, error) {
+	return LoadConfig(getDefaultKubeConfigPath())
+}
+
+func getDefaultKubeConfigPath() string {
+	return filepath.Join(homedir.HomeDir(), ".kube", "config")
 }

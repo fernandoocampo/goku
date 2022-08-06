@@ -1,12 +1,21 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/fernandoocampo/goku)](https://goreportcard.com/report/github.com/fernandoocampo/goku) ![CI](https://github.com/fernandoocampo/goku/actions/workflows/quality.yaml/badge.svg?branch=main) ![GitHub release](https://img.shields.io/github/release/fernandoocampo/goku/all.svg?style=plastic) [![GoDoc](https://godoc.org/github.com/fernandoocampo/goku?status.svg)](https://godoc.org/github.com/fernandoocampo/goku)
+
+
 # goku
 kubectl trainer inspired by the [kubectl cheat sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) site. The idea is to wrap kubectl commands, trying to abbreviate them, displaying the original command using `kubectl` when the user calls goku.
 
 ## How to test
 
+* to run unit tests run the following command
+
+```sh
+go test ./... -integration
+```
+
 * to run integration tests run the following command
 
 ```sh
-go test -timeout 2s -run ^TestNewClient$ github.com/fernandoocampo/goku/internal/k8s -integration
+go test -race ./...
 ```
 
 ## Known issues
